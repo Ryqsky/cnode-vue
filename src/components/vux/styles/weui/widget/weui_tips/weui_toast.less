@@ -1,0 +1,42 @@
+@import "../../base/fn";
+
+.weui_toast {
+    position: fixed;
+    z-index: 50000;
+    width: 7.6em;
+    //min-height: 7.6em;
+    top: 180px;
+    left: 50%;
+    margin-left: -3.8em;
+    background: rgba(40, 40, 40, 0.75);
+    text-align: center;
+    border-radius: 5px;
+    color: #FFFFFF;
+}
+.weui_icon_toast {
+    margin: 22px 0 0;
+    display: block;
+    &:before {
+        content: '\EA08';
+        color: #FFFFFF;
+        font-size: 55px;
+    }
+}
+.weui_toast_content {
+    margin: 0 0 15px;
+}
+
+// loading toast
+.weui_loading_toast{
+    .weui_toast_content{
+      margin-top:64%;
+      font-size:14px;
+    }
+}
+.weui_loading{
+    position: absolute;
+    width: 0px;
+    z-index: 1;
+    left: 50%;
+    top: 38%;
+}
