@@ -1,5 +1,7 @@
 ## Vue2版CNode社区WebApp
 
+> 假若本项目能给到你一点点帮助，求Star！
+
 在线地址：[http://cnode.ruanyq.cn/](http://cnode.ruanyq.cn/)
 
 ![mahua](http://cnode.ruanyq.cn/static/images/qrcode.png)
