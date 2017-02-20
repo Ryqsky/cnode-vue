@@ -98,12 +98,12 @@ router.beforeEach((to, from, next) => {
   }
   if (to.meta.auth) {
     let accessToken = localStorage.getItem('accessToken')
-    if (accessToken !== 'null') {
-      next()
-    } else {
+    if (accessToken === 'null' || accessToken === null) {
       next({
         name: 'login'
       })
+    } else {
+      next()
     }
   } else {
     next()

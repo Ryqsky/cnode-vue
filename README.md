@@ -20,7 +20,7 @@
 ### 最后
 - 感谢[Cnodejs.org](https://cnodejs.org/)社区提供的API
 - 感谢[Vue](https://github.com/vuejs/vue)提供无敌好用的渐进式JavaScript 框架
-- 感谢[Vux](https://cnodejs.org/)提供超级好用的组件库
+- 感谢[Vux](https://github.com/airyland/vux)提供超级好用的组件库
 
 ### 使用方法
 ``` bash
