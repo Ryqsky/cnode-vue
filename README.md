@@ -4,6 +4,8 @@
 
 在线地址：[http://cnode.ruanyq.cn/](http://cnode.ruanyq.cn/)
 
+扫码二维码体验更佳（**推荐**）
+
 ![mahua](http://cnode.ruanyq.cn/static/images/qrcode.png)
 
 ### 满大街的重写CNode，这个有什么亮点？
