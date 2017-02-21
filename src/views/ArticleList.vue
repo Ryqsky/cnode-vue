@@ -79,9 +79,7 @@
             this.articleList = result.data.data
             this.$nextTick(() => {
               this.$refs.scroller.donePulldown()
-              this.$refs.scroller.reset({
-                top: 0
-              })
+              this.$refs.scroller.reset()
               this.$loading.hide()
             })
           })

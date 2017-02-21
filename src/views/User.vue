@@ -114,7 +114,6 @@
         }
       },
       onFetchUser(id){
-        this.$loading.show()
         this.$axios.get(`/user/${id}`)
           .then(result => {
             this.userInfo.loginname = result.data.data.loginname
@@ -125,14 +124,12 @@
             this.userInfo.recent_topics = result.data.data.recent_topics
             this.userInfo.recent_replies = result.data.data.recent_replies
             this.displayList = this.currTab === 0 ? result.data.data.recent_replies : result.data.data.recent_topics
-            this.$loading.hide()
           })
           .catch(e => {
             console.log(e)
             this.$vux.toast.show({
               text: '获取数据失败',
             })
-            this.$loading.hide()
           })
       },
       checkLogin(){

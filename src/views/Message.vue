@@ -64,7 +64,6 @@
       },
       onFetchMessage(){
         if (this.checkLogin()) {
-          this.$loading.show()
           this.$axios.get(`/messages`, {
             params: {
               accesstoken: this.$store.getters.accessToken,
@@ -73,14 +72,12 @@
             .then(result => {
               console.log(result)
               this.displayList = this.tab === 0 ? result.data.data.hasnot_read_messages : result.data.data.has_read_messages
-              this.$loading.hide()
             })
             .catch(e => {
               console.log(e)
               this.$vux.toast.show({
                 text: '获取消息失败',
               })
-              this.$loading.hide()
             })
         }
       },

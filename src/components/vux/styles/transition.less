@@ -29,23 +29,18 @@
 /**
 * vue-router transition
 */
+
+.router-view {
+  width: 100%;
+  animation-duration: .5s;
+  animation-fill-mode: both;
+  backface-visibility: hidden;
+}
+
 .vux-pop-out-enter-active,
 .vux-pop-out-leave-active,
 .vux-pop-in-enter-active,
 .vux-pop-in-leave-active {
-  //background: #f4f4f4;
-  width: 100%;
-  animation-duration: 0.5s;
-  animation-fill-mode: both;
-  backface-visibility: hidden;
-  top: 0;
-  position: absolute;
-}
-
-.vux-pop-out-enter,
-.vux-pop-out-leave,
-.vux-pop-in-enter,
-.vux-pop-in-leave {
   will-change: transform;
   height: 100%;
   position: absolute;
@@ -53,54 +48,53 @@
 }
 
 .vux-pop-out-enter-active {
+  perspective: 1000;
   animation-name: popInLeft;
 }
-
 .vux-pop-out-leave-active {
   animation-name: popOutRight;
 }
-
 .vux-pop-in-enter-active {
   perspective: 1000;
   animation-name: popInRight;
 }
-
 .vux-pop-in-leave-active {
   animation-name: popOutLeft;
 }
-
 @keyframes popInLeft {
   from {
+    opacity: 0;
     transform: translate3d(-100%, 0, 0);
   }
   to {
+    opacity: 1;
     transform: translate3d(0, 0, 0);
   }
 }
-
 @keyframes popOutLeft {
   from {
-    transform: translate3d(0, 0, 0);
+    opacity: 1;
   }
   to {
     transform: translate3d(-100%, 0, 0);
   }
 }
-
 @keyframes popInRight {
   from {
+    opacity: 0;
     transform: translate3d(100%, 0, 0);
   }
   to {
+    opacity: 1;
     transform: translate3d(0, 0, 0);
   }
 }
-
 @keyframes popOutRight {
   from {
-    transform: translate3d(0, 0, 0);
+    opacity: 1;
   }
   to {
+    opacity: 0;
     transform: translate3d(100%, 0, 0);
   }
 }
