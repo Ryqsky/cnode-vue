@@ -42,10 +42,10 @@
     data () {
       return {
         tab: 0,
-        displayList: [],
+        displayList: []
       }
     },
-    activated(){
+    activated () {
       this.$store.commit('SET_SHOWTABBAR', true)
       this.onFetchMessage()
     },
@@ -53,20 +53,20 @@
       minHeight: () => {
         return (document.body.clientHeight >= 400 && document.body.clientHeight <= 736) ? document.body.clientHeight : window.screen.height
       },
-      isShowTip: function() {
+      isShowTip: function () {
         return !(this.displayList && this.displayList.length)
       }
     },
     methods: {
-      onSwitchTab(tab){
+      onSwitchTab (tab) {
         this.tab = tab
         this.onFetchMessage()
       },
-      onFetchMessage(){
+      onFetchMessage () {
         if (this.checkLogin()) {
           this.$axios.get(`/messages`, {
             params: {
-              accesstoken: this.$store.getters.accessToken,
+              accesstoken: this.$store.getters.accessToken
             }
           })
             .then(result => {
@@ -76,14 +76,14 @@
             .catch(e => {
               console.log(e)
               this.$vux.toast.show({
-                text: '获取消息失败',
+                text: '获取消息失败'
               })
             })
         }
       },
-      onClickMessage(id){
+      onClickMessage (id) {
         this.$axios.post(`/message/mark_all`, {
-          accesstoken: this.$store.getters.accessToken,
+          accesstoken: this.$store.getters.accessToken
         })
           .then(result => {
             console.log(result)
@@ -91,7 +91,7 @@
           .catch(e => {
             console.log(e)
             this.$vux.toast.show({
-              text: '标记全部已读失败',
+              text: '标记全部已读失败'
             })
           })
         this.$router.push({
@@ -101,18 +101,18 @@
           }
         })
       },
-      checkLogin(){
+      checkLogin () {
         let accessToken = this.$store.getters.accessToken
         if (!accessToken) {
           this.$vux.toast.show({
-            text: '请先登录',
+            text: '请先登录'
           })
           this.$router.replace('/login')
           return false
         } else {
           return true
         }
-      },
+      }
     }
   }
 </script>

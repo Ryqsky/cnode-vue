@@ -15,7 +15,6 @@
             <span class="head-author-name" v-text="author.name"></span>
           </div>
           <div class="head-middle-bottom">
-
             {{article.create_at | timeAgo}}创建
             ·
             <span v-text="article.visit_count"></span>次预览
@@ -79,7 +78,7 @@
 </template>
 <script>
   export default{
-    data(){
+    data () {
       return {
         page: 1,
         pageSize: 10,
@@ -112,7 +111,7 @@
         showExtBtnReply: true
       }
     },
-    activated(){
+    activated () {
       this.page = 1
       this.onFetchDetail()
     },
@@ -120,7 +119,7 @@
       window.onscroll = null
     },
     methods: {
-      onFetchDetail() {
+      onFetchDetail () {
         // 初始化数据
         this.$store.commit('SET_SHOWTABBAR', false)
         this.author = {
@@ -155,15 +154,13 @@
         let beforeScrollTop = document.documentElement.scrollTop || document.body.scrollTop
         window.onscroll = () => {
           let afterScrollTop = document.documentElement.scrollTop || document.body.scrollTop
-          _this.showExtBtnReply = beforeScrollTop >= afterScrollTop;
+          _this.showExtBtnReply = beforeScrollTop >= afterScrollTop
           beforeScrollTop = afterScrollTop
-
           let hasScrollTop = document.body.scrollTop
           let bodyHeight = document.body.scrollHeight
           let availHeight = window.screen.availHeight
           let remainingHeight = bodyHeight - availHeight - hasScrollTop
-          console.log(remainingHeight)
-          if(remainingHeight < 200){
+          if (remainingHeight < 200) {
             _this.onLoadMore()
           }
         }
@@ -203,16 +200,16 @@
           .catch(e => {
             console.log(e)
             this.$vux.toast.show({
-              text: '获取数据失败',
+              text: '获取数据失败'
             })
             this.$loading.hide()
           })
       },
-      checkLogin(){
+      checkLogin () {
         let accessToken = this.$store.getters.accessToken
         if (!accessToken) {
           this.$vux.toast.show({
-            text: '请先登录',
+            text: '请先登录'
           })
           this.$router.push('/login')
           return false
@@ -220,7 +217,7 @@
           return true
         }
       },
-      onReplyComment(id, name, index){
+      onReplyComment (id, name, index) {
         if (this.checkLogin()) {
           this.popup.replyId = id
           this.popup.placeholder = `正在回复${index + 1}楼，${name}`
@@ -229,7 +226,7 @@
           this.$refs.input.onFocus()
         }
       },
-      onReplyArticle(){
+      onReplyArticle () {
         if (this.checkLogin()) {
           this.popup.replyId = null
           this.popup.placeholder = `正在回复作者，${this.author.name}`
@@ -238,11 +235,11 @@
           this.$refs.input.onFocus()
         }
       },
-      onSendComment(){
+      onSendComment () {
         if (this.checkLogin()) {
           if (!this.popup.content) {
             this.$vux.toast.show({
-              text: '评论不能为空',
+              text: '评论不能为空'
             })
           } else {
             this.$loading.show()
@@ -262,25 +259,25 @@
                   create_at: new Date(),
                   id: result.data.reply_id,
                   reply_id: null,
-                  ups: [],
+                  ups: []
                 })
                 this.popup.show = false
                 this.$vux.toast.show({
-                  text: '评论成功',
+                  text: '评论成功'
                 })
                 this.$loading.hide()
               })
               .catch(e => {
                 console.log(e)
                 this.$vux.toast.show({
-                  text: '操作失败',
+                  text: '操作失败'
                 })
                 this.$loading.hide()
               })
           }
         }
       },
-      onLikeThisArticle() {
+      onLikeThisArticle () {
         if (this.checkLogin()) {
           let url
           let toastText
@@ -299,25 +296,25 @@
               console.log(result)
               this.article.is_collect = !this.article.is_collect
               this.$vux.toast.show({
-                text: toastText,
+                text: toastText
               })
             })
             .catch(e => {
               console.log(e)
               this.$vux.toast.show({
-                text: '操作失败',
+                text: '操作失败'
               })
             })
         }
       },
-      onLikeThisComment(id, index){
+      onLikeThisComment (id, index) {
         if (this.checkLogin()) {
           this.$axios.post(`/reply/${id}/ups`, {
-            accesstoken: this.$store.getters.accessToken,
+            accesstoken: this.$store.getters.accessToken
           })
             .then(result => {
               let toastText
-              if (result.data.action == 'down') {
+              if (result.data.action === 'down') {
                 toastText = '取消点赞成功'
                 let removeIndex = this.comment[index].ups.indexOf(this.$store.getters.loginInfo.id)
                 this.comment[index].ups.splice(removeIndex, 1)
@@ -326,13 +323,13 @@
                 this.comment[index].ups.push(this.$store.getters.loginInfo.id)
               }
               this.$vux.toast.show({
-                text: toastText,
+                text: toastText
               })
             })
             .catch(e => {
               console.log(e)
               this.$vux.toast.show({
-                text: '操作失败',
+                text: '操作失败'
               })
             })
         }
@@ -345,12 +342,12 @@
           this.displayCommentList = this.displayCommentList.concat(fetchComment)
           this.page++
         }
-      },
+      }
     },
     computed: {
       minHeight: () => {
-        return (document.body.clientHeight >= 400 && document.body.clientHeight <= 736) ? document.body.clientHeight :  window.screen.height
-      },
+        return (document.body.clientHeight >= 400 && document.body.clientHeight <= 736) ? document.body.clientHeight : window.screen.height
+      }
     }
   }
 </script>

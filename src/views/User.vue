@@ -53,7 +53,7 @@
 </template>
 <script>
   export default{
-    data(){
+    data () {
       return {
         currTab: 0,
         displayList: [],
@@ -68,11 +68,11 @@
         }
       }
     },
-    activated(){
+    activated () {
       this.onUpdateData()
     },
     methods: {
-      onUpdateData(){
+      onUpdateData () {
         if (this.$route.name === 'me') {
           this.$store.commit('SET_SHOWTABBAR', true)
           if (this.checkLogin()) {
@@ -85,7 +85,7 @@
           }
         }
       },
-      onLogout(){
+      onLogout () {
         localStorage.setItem('accessToken', null)
         this.$store.commit('SET_LOGININFO', {
           avatarUrl: '',
@@ -95,7 +95,7 @@
         })
         this.$router.push('/login')
       },
-      onSwitchTab(tab){
+      onSwitchTab (tab) {
         this.currTab = tab
         if (tab === 2) {
           this.$axios.get(`/topic_collect/${this.userInfo.loginname}`)
@@ -106,14 +106,14 @@
             .catch(e => {
               console.log(e)
               this.$vux.toast.show({
-                text: '获取数据失败',
+                text: '获取数据失败'
               })
             })
         } else {
           this.onFetchUser(this.userInfo.loginname)
         }
       },
-      onFetchUser(id){
+      onFetchUser (id) {
         this.$axios.get(`/user/${id}`)
           .then(result => {
             this.userInfo.loginname = result.data.data.loginname
@@ -128,15 +128,15 @@
           .catch(e => {
             console.log(e)
             this.$vux.toast.show({
-              text: '获取数据失败',
+              text: '获取数据失败'
             })
           })
       },
-      checkLogin(){
+      checkLogin () {
         let accessToken = this.$store.getters.accessToken
         if (!accessToken) {
           this.$vux.toast.show({
-            text: '请先登录',
+            text: '请先登录'
           })
           this.$router.replace('/login')
           return false

@@ -2,6 +2,8 @@
 
 > 假若本项目能给到你一点点帮助，求Star！
 
+![mahua](demo.gif)
+
 在线地址：[http://cnode.ruanyq.cn/](http://cnode.ruanyq.cn/)
 
 扫码二维码体验更佳（**推荐**）

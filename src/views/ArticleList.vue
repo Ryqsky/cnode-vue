@@ -59,7 +59,7 @@
         }
       }
     },
-    mounted(){
+    mounted () {
       this.onRefresh()
     },
     activated(){

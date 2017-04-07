@@ -25,7 +25,7 @@
 </template>
 <script>
   export default{
-    data(){
+    data () {
       return {
         accessToken: 'f24da430-fbcd-4710-880c-f53bb289924f',
         currTab: '最近回复',
@@ -33,14 +33,14 @@
         isLogin: false
       }
     },
-    activated(){
+    activated () {
       this.$loading.hide()
     },
     methods: {
-      onLogin(){
+      onLogin () {
         if (!this.accessToken) {
           this.$vux.toast.show({
-            text: '请输入AccessToken',
+            text: '请输入AccessToken'
           })
           return false
         } else {
@@ -58,16 +58,15 @@
                 accessToken: this.accessToken
               })
               this.$vux.toast.show({
-                text: '登录成功',
+                text: '登录成功'
               })
               this.$loading.hide()
               this.$router.push('/')
             })
-            .catch(e => {
-              console.log(e)
+            .catch(() => {
               localStorage.setItem('accessToken', null)
               this.$vux.toast.show({
-                text: 'AccessToken错误',
+                text: 'AccessToken错误'
               })
               this.$loading.hide()
             })

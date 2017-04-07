@@ -116,3 +116,4 @@ new Vue({
   router,
   store
 })
+

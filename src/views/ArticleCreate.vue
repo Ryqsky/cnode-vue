@@ -26,7 +26,7 @@
         ]
       }
     },
-    activated(){
+    activated () {
       this.$store.commit('SET_SHOWTABBAR', true)
       this.$store.commit('SET_ISAGAINLOADING', true)
       localStorage.setItem('isAgainLoading', true)
@@ -34,14 +34,14 @@
     computed: {
       minHeight: () => {
         return (document.body.clientHeight >= 400 && document.body.clientHeight <= 736) ? document.body.clientHeight : window.screen.height
-      },
+      }
     },
     methods: {
-      checkLogin(){
+      checkLogin () {
         let accessToken = this.$store.getters.accessToken
         if (!accessToken) {
           this.$vux.toast.show({
-            text: '请先登录',
+            text: '请先登录'
           })
           this.$router.push('/login')
           return false
@@ -49,17 +49,17 @@
           return true
         }
       },
-      onSendArticle(){
+      onSendArticle () {
         if (this.checkLogin()) {
           if (!this.title) {
             this.$vux.toast.show({
-              text: '请填写标题',
+              text: '请填写标题'
             })
             return false
           }
           if (!this.content) {
             this.$vux.toast.show({
-              text: '请填写内容',
+              text: '请填写内容'
             })
             return false
           }
@@ -72,7 +72,7 @@
           })
             .then(result => {
               this.$vux.toast.show({
-                text: '发布成功',
+                text: '发布成功'
               })
               this.$loading.hide()
               this.$router.push({
@@ -85,7 +85,7 @@
             .catch(e => {
               console.log(e)
               this.$vux.toast.show({
-                text: '发布失败',
+                text: '发布失败'
               })
               this.$loading.hide()
             })
