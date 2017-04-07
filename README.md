@@ -2,13 +2,13 @@
 
 > 假若本项目能给到你一点点帮助，求Star！
 
-![mahua](demo.gif)
+![demo](demo.gif)
 
 在线地址：[http://cnode.ruanyq.cn/](http://cnode.ruanyq.cn/)
 
 扫码二维码体验更佳（**推荐**）
 
-![mahua](http://cnode.ruanyq.cn/static/images/qrcode.png)
+![qrcode](static/images/qrcode.png)
 
 ### 满大街的重写CNode，这个有什么亮点？
 
@@ -17,16 +17,10 @@
 - 舒服细腻的UI样式布局
 - 合理的列表渲染优化
 
-### 为什么还要重写vue版的CNode？
-
-- 主要是练手，熟悉Vue2全家桶+Vux(超级好用组件库)，
-- 做一个最佳实践案例，作为以后一小段时间开发模板
-- 好吧，其实是我发现简历项目上没什么可以写的，拿这个来填上去的
-
 ### 最后
 - 感谢[Cnodejs.org](https://cnodejs.org/)社区提供的API
 - 感谢[Vue](https://github.com/vuejs/vue)提供无敌好用的渐进式JavaScript 框架
-- 感谢[Vux](https://github.com/airyland/vux)提供超级好用的组件库
+- 感谢[Vux](https://github.com/airyland/vux)提供无敌好用的组件库
 
 ### 使用方法
 ``` bash
@@ -39,3 +33,8 @@ npm run dev
 # build for production with minification
 npm run build
 ```
+
+### 代码体积可视化
+在执行npm run build后，可查看本项目代码体积所占的大小以及比例。
+
+![img](code_visual.png)
