@@ -1,48 +1,48 @@
 <template>
-  <div>
-    <scroller lock-x scrollbar-y use-pullup use-pulldown height="-50" @on-pullup-loading="onLoadMore"
-              @on-pulldown-loading="onRefresh" v-model="status" ref="scroller">
-      <div class="feed-box">
-        <div v-for="i in articleList" class="feed-li">
-          <router-link :to="{name: 'detail', query: { id: i.id }}">
+  <div class="feed-box">
+    <recycler :style="{maxHeight: minHeight - 50 +  'px'}" :list="articleList" :tombstone="false" :size="20"
+              :loadmore="onLoadMore">
+      <template slot="item" scope="props">
+        <div :id="props.data.id" class="feed-li">
+          <router-link :to="{name: 'detail', query: { id: props.data.id }}">
             <div class="feed-title">
-              <div class="feed-label" :class="[i.top ? 'feed-label-top' : `feed-label-other`]">
-                {{i.tab | translateTab(i.top)}}
+              <div class="feed-label" :class="[props.data.top ? 'feed-label-top' : `feed-label-other`]">
+                {{props.data.tab | translateTab(props.data.top)}}
               </div>
-              <p v-text="i.title"></p>
+              <p v-text="props.data.title"></p>
             </div>
             <div class="feed-content">
-              <router-link :to="{name: 'user', query: { id: i.author.loginname }}">
+              <router-link :to="{name: 'user', query: { id: props.data.author.loginname }}">
                 <div class="avatar">
-                  <img v-lazy="i.author.avatar_url" alt="headImgUrl">
+                  <img :src="props.data.author.avatar_url" alt="headImgUrl">
                 </div>
               </router-link>
               <div class="feed-right">
                 <div class="feed-right-top">
-                  <div class="feed-name" v-text="i.author.loginname">
+                  <div class="feed-name" v-text="props.data.author.loginname">
                   </div>
                   <div class="feed-count">
-                    <span v-text="i.reply_count"></span> / {{i.visit_count}}
+                    <span v-text="props.data.reply_count"></span> / {{props.data.visit_count}}
                   </div>
                 </div>
                 <div class="feed-right-bottom">
                   <div class="feed-time">
-                    创建于：<span>{{i.create_at | formatDate('yyyy-MM-dd hh:mm:ss')}}</span>
+                    创建于：<span>{{props.data.create_at | formatDate('yyyy-MM-dd hh:mm:ss')}}</span>
                   </div>
                   <div class="feed-pass">
-                    {{i.last_reply_at | timeAgo}}
+                    {{props.data.last_reply_at | timeAgo}}
                   </div>
                 </div>
               </div>
             </div>
           </router-link>
         </div>
+      </template>
+      <div slot="spinner" style="text-align: center">
+        <span style="line-height: 40px;"><spinner type="ios-small"></spinner></span>
       </div>
-      <div slot="pullup" class="xs-plugin-pullup-container xs-plugin-pullup-up"
-           style="position: absolute; width: 100%; height: 40px; bottom: -40px; text-align: center;">
-        <span v-show="status.pullupStatus === 'loading'" style="line-height: 40px;"><spinner type="ios-small"></spinner></span>
-      </div>
-    </scroller>
+      <div slot="nomore">No More Data</div>
+    </recycler>
   </div>
 </template>
 
@@ -62,7 +62,7 @@
     mounted () {
       this.onRefresh()
     },
-    activated(){
+    activated () {
       this.$store.commit('SET_SHOWTABBAR', true)
     },
     methods: {
@@ -78,15 +78,13 @@
             console.log(result)
             this.articleList = result.data.data
             this.$nextTick(() => {
-              this.$refs.scroller.donePulldown()
-              this.$refs.scroller.reset()
               this.$loading.hide()
             })
           })
           .catch(e => {
             console.log(e)
             this.$vux.toast.show({
-              text: '获取数据失败',
+              text: '获取数据失败'
             })
             this.$loading.hide()
           })
@@ -103,23 +101,21 @@
             this.articleList = this.articleList.concat(result.data.data)
             this.$nextTick(() => {
               _this.page++
-              this.$refs.scroller.donePullup()
-              this.$refs.scroller.reset()
             })
           })
           .catch(e => {
             console.log(e)
             this.$vux.toast.show({
-              text: '获取数据失败',
+              text: '获取数据失败'
             })
             this.$loading.hide()
           })
-      },
+      }
     },
     computed: {
       minHeight: () => {
         return (document.body.clientHeight >= 400 && document.body.clientHeight <= 736) ? document.body.clientHeight : window.screen.height
-      },
-    },
+      }
+    }
   }
 </script>

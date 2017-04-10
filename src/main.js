@@ -18,10 +18,14 @@ import Spinner from './components/vux/spinner'
 import Popup from './components/vux/popup'
 import ToastPlugins from './components/plugins/toast'
 import LoadingPlugins from './components/plugins/loading'
+import Recycler from './components/recycler'
+import Stats from './components/plugins/stats/index'
 
+// 取消300ms点击延迟
 const FastClick = require('fastclick')
 FastClick.attach(document.body)
 
+// 加载filters
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 })
@@ -43,6 +47,7 @@ Vue.component('XButton', XButton)
 Vue.component('Scroller', Scroller)
 Vue.component('Spinner', Spinner)
 Vue.component('Popup', Popup)
+Vue.component('Recycler', Recycler)
 
 // 是否有已登录过的记录，localStorage
 let accessToken = localStorage.getItem('accessToken')
@@ -129,6 +134,36 @@ Vue.use(VueLazyload, {
   loading: 'static/images/loading-spin.svg',
   attempt: 1
 })
+
+// DomNodes与fps检测
+if (false && window.requestIdleCallback) {
+  let domStats = new Stats()
+  let fpsStats = new Stats()
+  let domPanel = new Stats.Panel('Dom', '#0ff', '#002')
+  domStats.addPanel(domPanel)
+  domStats.showPanel(3)
+  fpsStats.showPanel(0)
+  fpsStats.dom.style.top = '48px'
+  document.body.appendChild(domStats.dom)
+  document.body.appendChild(fpsStats.dom)
+  setTimeout(function timeoutFunc () {
+    requestIdleCallback(() => {
+      domPanel.update(numDomNodes(document.body), 1500)
+      setTimeout(timeoutFunc, 100)
+    })
+  }, 100)
+  let animate = function () {
+    fpsStats.update()
+    requestAnimationFrame(animate)
+  }
+  animate()
+}
+
+function numDomNodes (node) {
+  if (!node.children || node.children.length === 0) return 0
+  let childrenCount = Array.from(node.children).map(numDomNodes)
+  return node.children.length + childrenCount.reduce(function (p, c) { return p + c }, 0)
+}
 
 /* eslint-disable no-new */
 new Vue({
