@@ -136,7 +136,7 @@ Vue.use(VueLazyload, {
 })
 
 // DomNodes与fps检测
-if (false && window.requestIdleCallback) {
+if (window.requestIdleCallback) {
   let domStats = new Stats()
   let fpsStats = new Stats()
   let domPanel = new Stats.Panel('Dom', '#0ff', '#002')

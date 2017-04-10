@@ -2,9 +2,6 @@
   <div class="vue-recyclist">
     <div ref="list" class="vue-recyclist-items" :style="{height: height + 'px'}">
       <div v-for="(item, index) in visibleItems" class="vue-recyclist-item" :style="{transform: 'translate3d(0,' + item.top + 'px,0)'}">
-        <div v-show="tombstone" :class="{'vue-recyclist-transition': tombstone}" :style="{opacity: +!item.loaded}">
-          <slot name="tombstone"></slot>
-        </div>
         <div :class="{'vue-recyclist-transition': tombstone}" :style="{opacity: +item.loaded}">
           <slot name="item" :data="item.data" :index="index"></slot>
         </div>
@@ -15,9 +12,6 @@
         <div :ref="'item'+index" v-for="(item, index) in items" v-if="!item.tomb && !item.height"
           class="vue-recyclist-item vue-recyclist-invisible">
           <slot name="item" :data="item.data"></slot>
-        </div>
-        <div ref="tomb" class="vue-recyclist-item vue-recyclist-invisible">
-          <slot name="tombstone"></slot>
         </div>
       </div>
     </div>
@@ -66,6 +60,9 @@
       loading () {
         return this.loadings.length
       }
+    },
+    activated () {
+      this.setScrollTop()
     },
     props: {
       list: {
