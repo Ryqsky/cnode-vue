@@ -14,7 +14,7 @@
             <div class="feed-content">
               <router-link :to="{name: 'user', query: { id: i.author.loginname }}">
                 <div class="avatar">
-                  <img :src="i.author.avatar_url" alt="headImgUrl">
+                  <img v-lazy="i.author.avatar_url" alt="headImgUrl">
                 </div>
               </router-link>
               <div class="feed-right">

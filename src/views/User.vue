@@ -2,7 +2,7 @@
   <div class="user-box" :style="{minHeight: isShowBtnLogout ? (minHeight + 'px') : (minHeight - 50 + 'px')}">
     <div class="user-head-box">
       <div class="big-avatar">
-        <img :src="userInfo.avatar_url" alt="">
+        <img v-lazy="userInfo.avatar_url" alt="">
       </div>
       <div class="user-head-title">
         <div class="user-head-name" v-text="userInfo.loginname"></div>
@@ -25,7 +25,7 @@
         <router-link :to="{name: 'detail', query: { id: i.id }}">
           <div class="feed-content">
             <div class="avatar">
-              <img :src="i.author.avatar_url" alt="headImgUrl">
+              <img v-lazy="i.author.avatar_url" alt="headImgUrl">
             </div>
             <div class="feed-right">
               <div class="feed-right-top">

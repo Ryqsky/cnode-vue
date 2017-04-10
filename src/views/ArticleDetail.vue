@@ -5,7 +5,7 @@
       </h2>
       <div class="head-intro">
         <div class="avatar">
-          <img :src="author.avatar_url" alt="headImgUrl">
+          <img v-lazy="author.avatar_url" alt="headImgUrl">
         </div>
         <div class="head-middle">
           <div class="head-middle-top">
@@ -38,7 +38,7 @@
         <div class="comment-head">
           <router-link :to="{name: 'user', query: { id: c.author.loginname }}">
             <div class="avatar">
-              <img :src="c.author.avatar_url" alt="headImgUrl">
+              <img v-lazy="c.author.avatar_url" alt="headImgUrl">
             </div>
           </router-link>
           <div class="comment-middle">

@@ -7,7 +7,7 @@
     <div class="message-li" v-for="i in displayList" @click="onClickMessage(i.topic.id)">
       <div class="message-head">
         <div class="avatar">
-          <img :src="i.author.avatar_url" alt="headImgUrl">
+          <img v-lazy="i.author.avatar_url" alt="headImgUrl">
         </div>
         <div class="message-head-right">
           <div class="message-name">
