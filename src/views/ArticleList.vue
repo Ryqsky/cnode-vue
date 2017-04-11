@@ -2,45 +2,42 @@
   <div class="feed-box">
     <recycler :style="{height: minHeight - 50 +  'px'}" :list="articleList" :tombstone="false" :size="20"
               :loadmore="onLoadMore">
-      <template slot="item" scope="props">
-        <div :id="props.data.id" class="feed-li">
-          <router-link :to="{name: 'detail', query: { id: props.data.id }}">
+      <template slot="item" scope="data" style="width: 100%">
+        <div :id="data.id" class="feed-li">
             <div class="feed-title">
-              <div class="feed-label" :class="[props.data.top ? 'feed-label-top' : `feed-label-other`]">
-                {{props.data.tab | translateTab(props.data.top)}}
+              <div class="feed-label" :class="[data.top ? 'feed-label-top' : `feed-label-other`]">
+                {{data.tab | translateTab(data.top)}}
               </div>
-              <p v-text="props.data.title"></p>
+              <p v-text="data.title"></p>
             </div>
             <div class="feed-content">
-              <router-link :to="{name: 'user', query: { id: props.data.author.loginname }}">
                 <div class="avatar">
-                  <img :src="props.data.author.avatar_url" alt="headImgUrl">
+                  <img :src="data.author.avatar_url" alt="headImgUrl">
                 </div>
-              </router-link>
               <div class="feed-right">
                 <div class="feed-right-top">
-                  <div class="feed-name" v-text="props.data.author.loginname">
+                  <div class="feed-name" v-text="data.author.loginname">
                   </div>
                   <div class="feed-count">
-                    <span v-text="props.data.reply_count"></span> / {{props.data.visit_count}}
+                    <span v-text="data.reply_count"></span> / {{data.visit_count}}
                   </div>
                 </div>
                 <div class="feed-right-bottom">
                   <div class="feed-time">
-                    创建于：<span>{{props.data.create_at | formatDate('yyyy-MM-dd hh:mm:ss')}}</span>
+                    创建于：<span>{{data.create_at | formatDate('yyyy-MM-dd hh:mm:ss')}}</span>
                   </div>
                   <div class="feed-pass">
-                    {{props.data.last_reply_at | timeAgo}}
+                    {{data.last_reply_at | timeAgo}}
                   </div>
                 </div>
               </div>
             </div>
-          </router-link>
         </div>
       </template>
       <div slot="spinner" style="text-align: center">
         <span style="line-height: 40px;"><spinner type="ios-small"></spinner></span>
       </div>
+      <div>No More Data</div>
       <div slot="nomore">No More Data</div>
     </recycler>
   </div>
@@ -119,3 +116,8 @@
     }
   }
 </script>
+<style>
+  .vue-recyclist-items > div {
+    width: 100%;
+  }
+</style>

@@ -1,19 +1,6 @@
 <template>
-  <div class="vue-recyclist" @click="renderItems">
-    <div @click="onScroll" ref="list" class="vue-recyclist-items" :style="{height: '500px'}">
-      <!--<div v-for="(item, index) in visibleItems" class="vue-recyclist-item" :style="{transform: 'translate3d(0,' + item.top + 'px,0)'}">-->
-      <!--<div :class="{'vue-recyclist-transition': tombstone}" :style="{opacity: +item.loaded}">-->
-      <!--<slot name="item" :data="item.data" :index="index"></slot>-->
-      <!--</div>-->
-      <!--</div>-->
-
-      <!--get tombstone and item heights from these invisible doms-->
-      <!--<div class="vue-recyclist-pool">-->
-      <!--<div :ref="'item'+index" v-for="(item, index) in items" v-if="!item.tomb && !item.height"-->
-      <!--class="vue-recyclist-item vue-recyclist-invisible">-->
-      <!--<slot name="item" :data="item.data"></slot>-->
-      <!--</div>-->
-      <!--</div>-->
+  <div class="vue-recyclist">
+    <div ref="list" class="vue-recyclist-items">
     </div>
 
     <div v-show="spinner && !nomore && !tombstone"
@@ -55,18 +42,26 @@
           offset: 0
         },
         tombstoneSize: 30,
-        ANIMATION_DURATION_MS: 0.2,
+        ANIMATION_DURATION_MS: 200,
         RUNWAY_ITEMS: 30,
         RUNWAY_ITEMS_OPPOSITE: 30,
         lastAttachedIndex: 0,
         firstAttachedIndex: 0,
-        TOMBSTONE_CLASS: 'tombstone'
+        TOMBSTONE_CLASS: 'tombstone',
+        loadItemIndex: 0,
+        tombstones: [],
+        INVISIBLE_CLASS: 'invisible',
+        listTemplate: `<div id={data.id} class="feed-li">
+                <div class="feed-title">
+                  <div class="feed-label" class={[data.top ? 'feed-label-top' : 'feed-label-other']}>
+                    {data.tab}
+                  </div>
+                  <p>{data.title}</p>
+                </div>
+              </div>`
       }
     },
     computed: {
-      visibleItems () {
-        return this.items.slice(Math.max(0, this.start - this.size), Math.min(this.items.length, this.start + this.size))
-      },
       firstIndex () {
         return Math.max(0, this.start - this.size)
       },
@@ -159,23 +154,19 @@
         this.loadmore()
       },
       loadItems () {
-        let loads = []
-        let start = 0
         let end = this.list.length
-        for (let i = start; i < end; i++) {
-          if (this.items[i] && this.items[i].loaded) {
+        console.log(end)
+        this.loadItemIndex = end
+        for (let i = 0; i < end; i++) {
+          if (this.items[i] && this.items[i].data) {
             continue
           }
+          if (this.items[i] && !this.items[i].data && this.items[i].node) {
+            this.items[i].node.classList.contains(this.TOMBSTONE_CLASS) && (this.tombstones.push(this.items[i].node), this.tombstones[this.tombstones.length - 1].classList.add(this.INVISIBLE_CLASS))
+          }
           this.setItem(i, this.list[i] || null)
-          // update newly added items position
-          loads.push(this.$nextTick().then(() => {
-            this.updateItemHeight(i)
-          }))
         }
-        // update items top and full list height
-        Promise.all(loads).then(() => {
-          this.updateItemTop()
-        })
+        this.attachContent()
       },
       setItem (index, data) {
         this.$set(this.items, index, {
@@ -188,55 +179,9 @@
           loaded: !!data
         })
       },
-      updateItemHeight (index) {
-        // update item height
-        let cur = this.items[index]
-        let dom = this.$refs['item' + index]
-        if (dom && dom[0]) {
-          cur.height = dom[0].offsetHeight
-        } else {
-          // item is tombstone
-          cur.height = this.tombHeight
-        }
-      },
-      updateItemTop () {
-        // loop all items to update item top and list height
-        this.height = 0
-        for (let i = 0; i < this.items.length; i++) {
-          let pre = this.items[i - 1]
-          this.items[i].top = pre ? pre.top + pre.height : 0
-          this.height += this.items[i].height
-        }
-        this.translateY += this.items[0].height
-        // update scroll top when needed
-        if (this.startOffset) {
-          this.setScrollTop()
-        }
-        this.updateIndex()
-        this.makeScrollable()
-      },
-      updateIndex () {
-        // update visible items start index
-        let top = this.$el.scrollTop
-        for (let i = 0; i < this.items.length; i++) {
-          if (this.items[i].top > top) {
-            this.start = Math.max(0, i - 1)
-            break
-          }
-        }
-        // scrolling does not need recalculate scrolltop
-        // this.getStartItemOffset()
-      },
-      getStartItemOffset () {
-        if (this.items[this.start]) {
-          this.startOffset = this.items[this.start].top - this.$el.scrollTop
-        }
-      },
       setScrollTop () {
         if (this.items[this.start]) {
-          this.$el.scrollTop = this.items[this.start].top - this.startOffset
-          // reset start item offset
-          this.startOffset = 0
+          this.$el.scrollTop = this.items[this.start].top
         }
       },
       makeScrollable () {
@@ -244,23 +189,18 @@
         this.$el.classList.add('vue-recyclist-scrollable')
       },
       onScroll () {
-        console.log('onScroll')
         console.log('scrollTop:' + this.$el.scrollTop)
-        console.log('offsetHeight:' + this.$el.offsetHeight)
-        let t = this.$el.scrollTop - this.anchorScrollTop
-        this.$el.scrollTop === 0 ? this.anchorItem = {
+        let currentScrollTop = this.$el.scrollTop
+        let differ = currentScrollTop - this.anchorScrollTop
+        currentScrollTop === 0 ? this.anchorItem = {
           index: 0,
           offset: 0
-        } : this.anchorItem = this.calculateAnchoredItem(this.anchorItem, t)
+        } : this.anchorItem = this.computeAnchorIndex()
         this.anchorScrollTop = this.$el.scrollTop
-        let e = this.calculateAnchoredItem(this.anchorItem, this.$el.offsetHeight)
-        console.log(e)
-        t < 0 ? this.fill(this.anchorItem.index - this.RUNWAY_ITEMS, e.index + this.RUNWAY_ITEMS_OPPOSITE) : this.fill(this.anchorItem.index - this.RUNWAY_ITEMS_OPPOSITE, e.index + this.RUNWAY_ITEMS)
-        if (this.$el.scrollTop + this.$el.offsetHeight > this.height - this.offset) {
+        differ < 0 ? this.fill(this.anchorItem.index - this.RUNWAY_ITEMS, this.anchorItem.index + this.RUNWAY_ITEMS_OPPOSITE) : this.fill(this.anchorItem.index - this.RUNWAY_ITEMS_OPPOSITE, this.anchorItem.index + this.RUNWAY_ITEMS)
+        if (this.loadItemIndex < this.lastAttachedIndex) {
           this.load()
-//          this.attachContent()
         }
-        this.updateIndex()
       },
       fill: function (t, e) {
         this.firstAttachedIndex = Math.max(0, t)
@@ -276,32 +216,28 @@
         this.setAnimatePosition(e)
 //        this.setScrollRunway()
       },
-      calculateAnchoredItem: function (t, e) {
-        if (e === 0) return t
-        e += t.offset
-        let i = t.index
-        let o = 0
-        if (e < 0) {
-          for (; e < 0 && i > 0 && this.items[i - 1].height;) {
-            console.log('----')
-            e += this.items[i - 1].height
-            i--
-            o = Math.max(-i, Math.ceil(Math.min(e, 0) / this.tombstoneSize))
-          }
-        } else {
-          for (; e > 0 && i < this.items.length && this.items[i].height && this.items[i].height < e;) {
-            console.log('++++')
-            e -= this.items[i].height
-            i++;
-            (i >= this.items.length || !this.items[i].height) && (o = Math.floor(Math.max(e, 0) / this.tombstoneSize))
+      computeAnchorIndex () {
+        let top = this.$el.scrollTop
+        if (top === 0) {
+          this.start = 0
+          return {
+            index: 0,
+            offset: 0
           }
         }
-        i += o
-        e -= o * this.tombstoneSize
-        return {index: i, offset: e}
+        for (let i = 0; i < this.items.length; i++) {
+          if (this.items[i].top > top) {
+            this.start = Math.max(0, i - 1)
+            break
+          }
+        }
+        return {
+          index: this.start,
+          offset: 0
+        }
       },
       cacheItemHeight: function () {
-        for (var t = this.firstAttachedIndex; t < this.lastAttachedIndex; t++) {
+        for (let t = this.firstAttachedIndex; t < this.lastAttachedIndex; t++) {
           this.items[t].data && !this.items[t].height && (this.items[t].height = this.items[t].node.offsetHeight, this.items[t].width = this.items[t].node.offsetWidth)
         }
       },
@@ -322,25 +258,32 @@
         }
       },
       onResize () {
-        this.getStartItemOffset()
         this.items.forEach((item) => {
           item.loaded = false
         })
         this.loadItems()
       },
       createTombstone: function () {
-        return new Vue({
-          el: document.createElement('div'),
-          render: function (h) {
-            return <h2>占位符</h2>
-          }
-        }).$el
+        let tombstone = this.tombstones.pop()
+        if (tombstone) {
+          tombstone.classList.remove(this.INVISIBLE_CLASS)
+          tombstone.style.opacity = 1
+          tombstone.style.transform = ''
+          tombstone.style.transition = ''
+          return tombstone
+        } else {
+          return new Vue({
+            el: document.createElement('div'),
+            render: function (h) {
+              return <h2 class="tombstone">占位符</h2>
+            }
+          }).$el
+        }
       },
       renderItems () {
         console.log(this.firstAttachedIndex)
         console.log(this.lastAttachedIndex)
         let items = []
-        let tempEls = []
         for (let i = this.firstAttachedIndex; i < this.lastAttachedIndex; i++) {
           for (; this.items.length <= i;) this.addItem()
           if (this.items[i].node) {
@@ -350,26 +293,19 @@
           }
           let el = this.items[i].data ? this.renderTemp('', this.items[i].data, this.items[i]) : this.createTombstone()
           el.style.position = 'absolute'
-          if (!this.items[i].data) {
-            this.items[i].height = 30
-          }
           this.items[i].node = el
           this.items[i].top = -1
-          tempEls.push(el)
-        }
-        console.log(tempEls)
-        for (let i = 0, len = tempEls.length; i < len; i++) {
-          this.$refs.list.appendChild(tempEls[i])
+          this.$refs.list.appendChild(el)
         }
         return items
       },
       getUnUsedNodes: function () {
-        for (let t = 0; t < this.items.length; t++) {
-//          console.log('getUnUsedNodes')
+        for (let t = 0, len = this.items.length; t < len; t++) {
           if (t !== this.firstAttachedIndex) {
             this.items[t].vm && this.items[t].vm.$destroy()
-            console.log('getUnUsedNodes')
-            console.log(this.items[t].node)
+            if (this.items[t].node) {
+              this.items[t].node.classList.contains(this.TOMBSTONE_CLASS) && (this.tombstones.push(this.items[t].node), this.tombstones[this.tombstones.length - 1].classList.add(this.INVISIBLE_CLASS))
+            }
             this.items[t].node && this.unusedNodes.push(this.items[t].node)
             this.items[t].vm = null
             this.items[t].node = null
@@ -379,21 +315,25 @@
         }
       },
       clearUnUsedNodes: function () {
-        console.log('clearUnUsedNodes')
-        console.log(this.unusedNodes)
         for (; this.unusedNodes.length;) this.$refs.list.removeChild(this.unusedNodes.pop())
       },
       setAnimatePosition: function (t) {
+        this.tombstoneLayout(t)
         this.itemLayout(t)
       },
-      itemLayout: function (t) {
-        let e = void 0
-        let i = void 0
-        for (e = this.firstAttachedIndex; e < this.lastAttachedIndex; e++) {
-          i = t[e]
+      tombstoneLayout: function (t) {
+        for (let e in t) {
+          let i = t[e]
+          this.items[e].node.style.transform = 'translateY(' + (this.anchorScrollTop + i[1]) + 'px)'
+          this.items[e].node.style.transition = 'transform ' + this.ANIMATION_DURATION_MS + 'ms'
+        }
+      },
+      itemLayout: function (items) {
+        for (let e = this.firstAttachedIndex; e < this.lastAttachedIndex; e++) {
+          let i = items[e]
           if (i) {
             i[0].style.transition = 'transform ' + this.ANIMATION_DURATION_MS + 'ms, opacity ' + this.ANIMATION_DURATION_MS + 'ms'
-            i[0].style.transform = 'translateY(' + this.curPos + 'px) scale(' + this.items[e].width / this.tombstoneWidth_ + ', ' + this.items[e].height / this.tombstoneSize + ')'
+            i[0].style.transform = 'translateY(' + this.curPos + 'px)'
             i[0].style.opacity = 0
           }
           if (this.curPos !== this.items[e].top) {
@@ -416,22 +356,18 @@
         })
       },
       renderTemp (target, data, item) {
+        let _this = this
         let $vm = new Vue({
           el: document.createElement('div'),
           render (h) {
-            let tempData = {
-              props: data
-            }
-            return (
-              <div id={data.id} class="feed-li" {...tempData}>
-                <div class="feed-title">
-                  <div class="feed-label" class={[data.top ? 'feed-label-top' : `feed-label-other`]}>
-                  {data.tab}
-                </div>
-                <p>{data.title}</p>
-              </div>
-            </div>
-            )
+//            let tempData = {
+//              props: data
+//            }
+            return h('div', [
+              _this.$scopedSlots.item({
+                ...data
+              })
+            ])
           }
         })
         item && (item.vm = $vm)
@@ -508,6 +444,10 @@
     -webkit-transform-origin: left top;
     transform-origin: left top;
     background-color: inherit
+  }
+
+  .invisible {
+    display: none;
   }
 </style>
 <style lang="less" scoped>
