@@ -1,6 +1,6 @@
 <template>
   <div class="feed-box">
-    <recycler :style="{maxHeight: minHeight - 50 +  'px'}" :list="articleList" :tombstone="false" :size="20"
+    <recycler :style="{height: minHeight - 50 +  'px'}" :list="articleList" :tombstone="false" :size="20"
               :loadmore="onLoadMore">
       <template slot="item" scope="props">
         <div :id="props.data.id" class="feed-li">

@@ -2,7 +2,7 @@
 var path = require('path')
 var express = require('express')
 var config = require('../config')
-var port = process.env.PORT || 80
+var port = process.env.PORT || 18034
 
 var app = express()
 
