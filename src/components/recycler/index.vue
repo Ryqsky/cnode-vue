@@ -116,7 +116,9 @@
       },
       items (arr) {
         if (arr.length > this.list.length) {
-          this.getItems()
+          if (!this.loading) {
+            this.loadItems()
+          }
         }
       }
     },
@@ -229,7 +231,10 @@
       },
       cacheItemHeight: function () {
         for (let t = this.firstAttachedIndex; t < this.lastAttachedIndex; t++) {
-          this.items[t].data && !this.items[t].height && (this.items[t].height = this.items[t].node.offsetHeight, this.items[t].width = this.items[t].node.offsetWidth)
+          if (this.items[t].node && !this.items[t].height) {
+            this.items[t].height = this.items[t].node.offsetHeight
+            this.items[t].width = this.items[t].node.offsetWidth
+          }
         }
       },
       getNodePosition: function () {
@@ -339,7 +344,7 @@
             this.items[e].node.style.transform = 'translateY(' + this.curPos + 'px)'
           }
           this.items[e].top = this.curPos
-          this.curPos += this.items[e].height || this.tombstoneSize
+          this.curPos += this.items[e].height
         }
       },
       addItem: function () {
