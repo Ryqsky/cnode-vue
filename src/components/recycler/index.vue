@@ -23,6 +23,7 @@
 </template>
 <script type="text/babel">
   import Vue from 'vue'
+  import router from './../../router'
   export default {
     data () {
       return {
@@ -33,7 +34,6 @@
         loadings: [], // Loading status queue
         start: 0, // Visible items start index
         startOffset: 0, // Start item offset,
-        baseNode: document.createElement('div'),
         unusedNodes: [],
         anchorScrollTop: 0,
         curPos: 0,
@@ -50,15 +50,7 @@
         TOMBSTONE_CLASS: 'tombstone',
         loadItemIndex: 0,
         tombstones: [],
-        INVISIBLE_CLASS: 'invisible',
-        listTemplate: `<div id={data.id} class="feed-li">
-                <div class="feed-title">
-                  <div class="feed-label" class={[data.top ? 'feed-label-top' : 'feed-label-other']}>
-                    {data.tab}
-                  </div>
-                  <p>{data.title}</p>
-                </div>
-              </div>`
+        INVISIBLE_CLASS: 'invisible'
       }
     },
     computed: {
@@ -155,7 +147,6 @@
       },
       loadItems () {
         let end = this.list.length
-        console.log(end)
         this.loadItemIndex = end
         for (let i = 0; i < end; i++) {
           if (this.items[i] && this.items[i].data) {
@@ -272,10 +263,17 @@
           tombstone.style.transition = ''
           return tombstone
         } else {
+          let _this = this
           return new Vue({
             el: document.createElement('div'),
-            render: function (h) {
-              return <h2 class="tombstone">占位符</h2>
+            render (h) {
+              return h('div', {
+                'class': {
+                  tombstone: true
+                }
+              }, [
+                _this.$scopedSlots.tombstone()
+              ])
             }
           }).$el
         }
@@ -358,11 +356,9 @@
       renderTemp (target, data, item) {
         let _this = this
         let $vm = new Vue({
+          router,
           el: document.createElement('div'),
           render (h) {
-//            let tempData = {
-//              props: data
-//            }
             return h('div', [
               _this.$scopedSlots.item({
                 ...data

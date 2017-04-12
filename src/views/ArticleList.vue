@@ -2,8 +2,9 @@
   <div class="feed-box">
     <recycler :style="{height: minHeight - 50 +  'px'}" :list="articleList" :tombstone="false" :size="20"
               :loadmore="onLoadMore">
-      <template slot="item" scope="data" style="width: 100%">
+      <template slot="item" scope="data">
         <div :id="data.id" class="feed-li">
+          <router-link :to="{name: 'detail', query: { id: data.id }}">
             <div class="feed-title">
               <div class="feed-label" :class="[data.top ? 'feed-label-top' : `feed-label-other`]">
                 {{data.tab | translateTab(data.top)}}
@@ -11,9 +12,11 @@
               <p v-text="data.title"></p>
             </div>
             <div class="feed-content">
+              <router-link :to="{name: 'user', query: { id: data.author.loginname }}">
                 <div class="avatar">
                   <img :src="data.author.avatar_url" alt="headImgUrl">
                 </div>
+              </router-link>
               <div class="feed-right">
                 <div class="feed-right-top">
                   <div class="feed-name" v-text="data.author.loginname">
@@ -28,6 +31,42 @@
                   </div>
                   <div class="feed-pass">
                     {{data.last_reply_at | timeAgo}}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </router-link>
+        </div>
+      </template>
+      <template slot="tombstone" scope="data">
+        <div class="feed-li tombstone">
+            <div class="feed-title">
+              <div class="feed-label feed-label-other">
+                问答
+              </div>
+              <p>
+                默认问答阿斯蒂芬
+              </p>
+            </div>
+            <div class="feed-content">
+              <div class="avatar">
+                <img src="" alt="headImgUrl">
+              </div>
+              <div class="feed-right">
+                <div class="feed-right-top">
+                  <div class="feed-name" >
+                    名字
+                  </div>
+                  <div class="feed-count">
+                    <span>时间</span> / 看的次数
+                  </div>
+                </div>
+                <div class="feed-right-bottom">
+                  <div class="feed-time">
+                    创建于：<span>{{new Date() | formatDate('yyyy-MM-dd hh:mm:ss')}}</span>
+                  </div>
+                  <div class="feed-pass">
+                    {{new Date() | timeAgo}}
                   </div>
                 </div>
               </div>
