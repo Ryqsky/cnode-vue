@@ -86,7 +86,7 @@
   export default {
     data () {
       return {
-        page: 1,
+        page: 0,
         limit: 20,
         articleList: [],
         status: {
@@ -96,7 +96,7 @@
       }
     },
     mounted () {
-      this.onRefresh()
+//      this.onRefresh()
     },
     activated () {
       this.$store.commit('SET_SHOWTABBAR', true)

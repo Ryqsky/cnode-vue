@@ -41,10 +41,9 @@
           index: 0,
           offset: 0
         },
-        tombstoneSize: 30,
         ANIMATION_DURATION_MS: 200,
-        RUNWAY_ITEMS: 30,
-        RUNWAY_ITEMS_OPPOSITE: 30,
+        RUNWAY_ITEMS: 20,
+        RUNWAY_ITEMS_OPPOSITE: 20,
         lastAttachedIndex: 0,
         firstAttachedIndex: 0,
         TOMBSTONE_CLASS: 'tombstone',
@@ -130,7 +129,6 @@
     methods: {
       init () {
         this.reset()
-        this.load()
       },
       reset () {
         this.items = []

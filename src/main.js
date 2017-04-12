@@ -13,7 +13,7 @@ import Group from './components/vux/group'
 import XButton from './components/vux/x-button'
 import {Flexbox, FlexboxItem} from './components/vux/flexbox'
 import {Tab, TabItem} from './components/vux/tab'
-import Scroller from './components/vux/scroller'
+// import Scroller from './components/vux/scroller'
 import Spinner from './components/vux/spinner'
 import Popup from './components/vux/popup'
 import ToastPlugins from './components/plugins/toast'
@@ -44,7 +44,7 @@ Vue.component('XTextarea', XTextarea)
 Vue.component('Selector', Selector)
 Vue.component('Group', Group)
 Vue.component('XButton', XButton)
-Vue.component('Scroller', Scroller)
+// Vue.component('Scroller', Scroller)
 Vue.component('Spinner', Spinner)
 Vue.component('Popup', Popup)
 Vue.component('Recycler', Recycler)
@@ -136,28 +136,28 @@ Vue.use(VueLazyload, {
 })
 
 // DomNodes与fps检测
-if (window.requestIdleCallback) {
-  let domStats = new Stats()
-  let fpsStats = new Stats()
-  let domPanel = new Stats.Panel('Dom', '#0ff', '#002')
-  domStats.addPanel(domPanel)
-  domStats.showPanel(3)
-  fpsStats.showPanel(0)
-  fpsStats.dom.style.top = '48px'
-  document.body.appendChild(domStats.dom)
-  document.body.appendChild(fpsStats.dom)
-  setTimeout(function timeoutFunc () {
-    requestIdleCallback(() => {
-      domPanel.update(numDomNodes(document.body), 1500)
-      setTimeout(timeoutFunc, 100)
-    })
-  }, 100)
-  let animate = function () {
-    fpsStats.update()
-    requestAnimationFrame(animate)
-  }
-  animate()
+let domStats = new Stats()
+let fpsStats = new Stats()
+let domPanel = new Stats.Panel('Dom', '#0ff', '#002')
+domStats.addPanel(domPanel)
+domStats.showPanel(3)
+fpsStats.showPanel(0)
+fpsStats.dom.style.top = '48px'
+document.body.appendChild(domStats.dom)
+document.body.appendChild(fpsStats.dom)
+window.requestIdleCallback ? setTimeout(function t () {
+  requestIdleCallback(function () {
+    domPanel.update(numDomNodes(document.body), 1500)
+    setTimeout(t, 500)
+  })
+}, 500) : setInterval(function () {
+  domPanel.update(numDomNodes(document.body), 1500)
+}, 500)
+let animate = function () {
+  fpsStats.update()
+  requestAnimationFrame(animate)
 }
+animate()
 
 function numDomNodes (node) {
   if (!node.children || node.children.length === 0) return 0
