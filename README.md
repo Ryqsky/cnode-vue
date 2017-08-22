@@ -4,7 +4,7 @@
 
 ![demo](demo.gif)
 
-在线地址：[http://cnode.ruanyq.cn/](http://cnode.ruanyq.cn/)
+在线地址：[http://119.29.227.109/](http://119.29.227.109/)
 
 扫码二维码体验更佳（**推荐**）
 
