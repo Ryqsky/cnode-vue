@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "array-find": "^1.0.0",
-    "axios": "^0.18.1",
+    "axios": "^0.21.1",
     "fastclick": "^1.0.6",
     "lodash.debounce": "^4.0.8",
     "object-assign": "^4.1.1",
